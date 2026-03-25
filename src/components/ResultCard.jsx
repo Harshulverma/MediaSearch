@@ -1,15 +1,15 @@
-import React, { useState } from "react"
+import React, { useRef, memo } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import { addToCollection } from "../redux/features/collectionSlice"
 
-const ResultCard = ({ item }) => {
+const ResultCard = memo(function ResultCard({ item }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const collection = useSelector((state) => state.collection.items);
   const query = useSelector((state) => state.search.query);
-  const [isVideoHovered, setIsVideoHovered] = useState(false);
+  const videoRef = useRef(null);
 
   // check if already saved
   const isSaved = collection.some((i) => i.id === item.id);
@@ -63,9 +63,22 @@ const ResultCard = ({ item }) => {
     );
   };
 
+  const handleCardMouseEnter = () => {
+    if (item.type !== "video" || !videoRef.current) return;
+    videoRef.current.play().catch(() => {});
+  };
+
+  const handleCardMouseLeave = () => {
+    if (item.type !== "video" || !videoRef.current) return;
+    videoRef.current.pause();
+    videoRef.current.currentTime = 0;
+  };
+
   return (
     <div
       onClick={openDetails}
+      onMouseEnter={handleCardMouseEnter}
+      onMouseLeave={handleCardMouseLeave}
       className="relative group cursor-pointer bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-105"
     >
       
@@ -81,13 +94,13 @@ const ResultCard = ({ item }) => {
           />
         ) : (
           <video
+            ref={videoRef}
             src={item.src}
             muted
             loop
+            playsInline
+            preload="metadata"
             className="w-full object-cover transition-all duration-500 group-hover:scale-110"
-            onMouseEnter={() => setIsVideoHovered(true)}
-            onMouseLeave={() => setIsVideoHovered(false)}
-            autoPlay={isVideoHovered}
           />
         )}
 
@@ -105,7 +118,7 @@ const ResultCard = ({ item }) => {
                   }
                 }}
                 disabled={isSaved}
-                className={`flex-1 px-4 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 backdrop-blur-sm
+                className={`w-fit px-4 py-2 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 backdrop-blur-sm
                   ${isSaved 
                     ? "bg-emerald-500/90 text-white" 
                     : "bg-rose-500/90 text-white"
@@ -154,6 +167,6 @@ const ResultCard = ({ item }) => {
       </div>
     </div>
   );
-};
+});
 
 export default ResultCard;

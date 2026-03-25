@@ -197,6 +197,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import MasonryGrid from "./MasonryGrid";
+import PageLoader from "./PageLoader";
 import { addToCollection } from "../redux/features/collectionSlice";
 import { fetchVideos } from "../api/mediaApi";
 
@@ -341,8 +342,8 @@ const VideoDetail = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-900 flex items-center justify-center">
-        <div className="text-white text-xl">Loading video...</div>
+      <div className="min-h-screen bg-slate-900">
+        <PageLoader fullScreen message="Loading video" />
       </div>
     );
   }

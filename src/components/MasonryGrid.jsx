@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { memo } from 'react';
 import ResultCard from './ResultCard';
 import CollectionCard from './CollectionCard';
 
-const MasonryGrid = ({ results, isCollection = false }) => {
+const MasonryGrid = memo(function MasonryGrid({ results, isCollection = false }) {
   // Create a unique key by combining id and type to prevent duplicates
   const getUniqueKey = (item, index) => {
     return `${item.id}-${item.type}-${index}`;
@@ -14,7 +14,7 @@ const MasonryGrid = ({ results, isCollection = false }) => {
         {results.map((item, index) => (
           <div
             key={getUniqueKey(item, index)}
-            className="break-inside-avoid mb-4 transform transition-all duration-300 hover:scale-105 hover:z-10"
+            className="break-inside-avoid mb-4 transform transition-all duration-300 hover:scale-105 hover:z-10 [content-visibility:auto] [contain-intrinsic-size:auto_320px]"
           >
             {isCollection ? (
               <CollectionCard item={item} />
@@ -26,6 +26,6 @@ const MasonryGrid = ({ results, isCollection = false }) => {
       </div>
     </div>
   );
-};
+});
 
 export default MasonryGrid;
